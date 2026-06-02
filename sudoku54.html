@@ -2,7 +2,7 @@
 <html lang="tr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Sudoku54 v0.0.6 54Gamez</title>
+    <title>Sudoku54 v1.0.1 54Gamez</title>
     <style>
         * {
             margin: 0;
@@ -308,11 +308,11 @@
             font-weight: bold; letter-spacing: 2px;
         }
         .panel-close:hover, .panel-close:active { background: #ff0055; color: #fff; }
-        #lb-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        #lb-table th, #lb-table td { padding: 6px 8px; text-align: left; border-bottom: 1px solid #223; }
-        #lb-table th { color: #00ffff; letter-spacing: 1px; }
-        #lb-table td { color: #cdd; }
-        #lb-empty { color: #889; font-size: 12px; text-align: center; padding: 10px 0; }
+			#lb-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+			#lb-table th, #lb-table td { padding: 6px 8px; text-align: left; border-bottom: 1px solid #223; }
+			#lb-table th { color: #00ffff; letter-spacing: 1px; }
+			#lb-table td { color: #cdd; }
+			#lb-empty { color: #889; font-size: 12px; text-align: center; padding: 10px 0; }
         .credits-line { font-size: 13px; color: #cdd; line-height: 1.7; letter-spacing: 0.5px; }
         .credits-line b { color: #00ffff; }
         .credits-brand { color: #ff8800; font-weight: bold; }
@@ -326,27 +326,65 @@
         body.light-theme .panel-row { color: #234; }
         body.light-theme #lb-table td { color: #234; }
         body.light-theme .credits-line { color: #234; }
+		
+		.score-bar {
+			display: flex;
+			justify-content: space-between;
+			background: linear-gradient(135deg, #2a3f6e, #1e2f52);
+			border-radius: 6px;
+			padding: 4px 8px;
+			margin: 5px 0;
+			color: gold;
+			font-weight: bold;
+		}
+
+		.score-info {
+			font-size: 0.75rem;
+			letter-spacing: 1px;
+		}
+
+		.score-info span:first-child {
+			color: #ffd966;
+		}
+
+		.score-info span:last-child {
+			color: white;
+			font-size: 1rem;
+			margin-left: 3px;
+		}
     </style>
 </head>
 <body>
 <div class="container">
-    <h5>🧩Sudoku54 v0.0.6 54Gamez</h5>
+    <h5>🧩Sudoku54 v1.0.1 54Gamez</h5>
 	<!-- Icon bar above the game area -->
     <div class="controls">
-        <button title="Yeni Oyun" onclick="newGame()">🔄 Yeni Oyun</button>
-        <button title="Kontrol Et" onclick="checkSolution()">✓ Kontrol</button>
+        <button title="Yeni Oyun" onclick="newGame()">🔄Yeni</button>
+        <button title="Kontrol Et" onclick="checkSolution()">✓Kontrol</button>
 		<button title="Ayarlar" onclick="openPanel(&#39;settings&#39;)">⚙️</button>
         <button title="Rekorlar" onclick="openPanel(&#39;leaderboard&#39;)">🏆</button>
         <button title="Hakkında" onclick="openPanel(&#39;credits&#39;)">ℹ️</button>
-		<button onclick="giveHint()">💡 İpucu</button>
-        <button onclick="solvePuzzle()">✨ Çözüm</button>
-		<div id="time-display" style="display: none;">Süre: <span id="time">00:00</span></div>
+		<button onclick="giveHint()">💡</button>
+        <button onclick="solvePuzzle()">✨Çözüm</button>
+		<div id="time-display" style="display: none;"><span id="time">00:00</span></div>
     </div>
+	<!-- puan göstergesi skor -->
+	<div class="score-bar">
+		<div class="score-info">
+			<span>🏆 Puan: </span>
+			<span id="current-score">0</span>
+		</div>
+		<div class="score-info">
+			<span>⭐ Seviye: </span>
+			<span id="level-display">1</span>
+		</div>
+	</div>
+	<!-- oyuncuyla iletişim status kısmı -->
 	<div class="status" id="status"></div>
 	<!-- the game area -->
     <div class="sudoku-grid" id="grid"><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell fixed">6</div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell fixed">5</div><div class="cell"></div><div class="cell"></div><div class="cell fixed">8</div><div class="cell"></div><div class="cell"></div><div class="cell fixed">1</div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell fixed">9</div><div class="cell"></div><div class="cell"></div><div class="cell fixed">4</div><div class="cell"></div><div class="cell"></div><div class="cell fixed">7</div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell fixed">3</div><div class="cell"></div><div class="cell fixed">8</div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell fixed">8</div><div class="cell"></div><div class="cell fixed">7</div><div class="cell"></div><div class="cell fixed">1</div><div class="cell"></div><div class="cell fixed">9</div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell fixed">6</div><div class="cell"></div><div class="cell fixed">9</div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell fixed">4</div><div class="cell"></div><div class="cell"></div><div class="cell fixed">3</div><div class="cell"></div><div class="cell"></div><div class="cell fixed">6</div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell fixed">7</div><div class="cell"></div><div class="cell"></div><div class="cell fixed">2</div><div class="cell"></div><div class="cell"></div><div class="cell fixed">5</div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell fixed">9</div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
 	<!-- the num pad area -->
-	<div class="number-pad" id="number-pad"><div class="num-btn" data-num="1">1</div><div class="num-btn" data-num="2">2</div><div class="num-btn" data-num="3">3</div><div class="num-btn" data-num="4">4</div><div class="num-btn" data-num="5">5</div><div class="num-btn" data-num="6">6</div><div class="num-btn" data-num="7">7</div><div class="num-btn" data-num="8">8</div><div class="num-btn" data-num="9">9</div><div class="num-btn clear-btn">⌫ Sil</div></div>
+	<div class="number-pad" id="number-pad"><div class="num-btn" data-num="1">1</div><div class="num-btn" data-num="2">2</div><div class="num-btn" data-num="3">3</div><div class="num-btn" data-num="4">4</div><div class="num-btn" data-num="5">5</div><div class="num-btn" data-num="6">6</div><div class="num-btn" data-num="7">7</div><div class="num-btn" data-num="8">8</div><div class="num-btn" data-num="9">9</div><div class="num-btn clear-btn">Sil</div></div>
 	<div class="action-row"> 
     </div>
 	</div>
@@ -373,22 +411,30 @@
             <button class="panel-close" onclick="closePanel()">KAPAT</button>
         </div>
 
-        <!-- Leaderboard panel -->
-        <div id="panel-leaderboard" class="panel">
-            <h3>🏆 Rekorlar</h3>
-            <table id="lb-table">
-                <thead><tr><th>#</th><th>Puan</th><th>Sev</th><th>Tarih</th></tr></thead>
-                <tbody id="lb-body"></tbody>
-            </table>
-            <div id="lb-empty" style="display:none">Henüz kayıt yok. İlk rekoru sen kur!</div>
-            <button class="panel-close" onclick="closePanel()">KAPAT</button>
-        </div>
+        <div id="leaderboard-panel" class="panel">
+			<h3>🏆 LİDER TABLOSU 🏆</h3>
+		<div class="panel-row">
+			<span>🎮 Oyuncu:</span>
+			<button class="toggle-btn" onclick="setPlayerName()">İsim Değiştir</button>
+		</div>
+			<table id="lb-table">
+				<thead>
+				<tr><th>#</th><th>Oyuncu</th><th>Puan</th><th>Seviye</th></tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		<div id="lb-empty" style="display:none;">Henüz skor yok</div>
+		<div class="panel-row">
+			<button class="panel-close" onclick="closePanel()">Kapat</button>
+			<button class="toggle-btn" onclick="resetLeaderboard()" style="border-color:#ff5555;">Sıfırla</button>
+		</div>
+	</div>
 
         <!-- Credits panel -->
         <div id="panel-credits" class="panel">
             <h3>ℹ️ Hakkında</h3>
             <div class="credits-line">
-                <b>Sudoku54 v0.0.6</b> · 54Gamez<br><br>
+                <b>Sudoku54 v1.0.1</b> · 54Gamez<br><br>
                 Programcılar:<br>
                 Yavuz Selim DURMUŞ &amp; Selim DURMUŞ<br><br>
                 <span class="credits-brand">MyBetaSoft · MyBetaSoftware</span><br>
@@ -479,23 +525,34 @@
 
     // yeni oyun başlat
     function newGame() {
-        const diff = document.getElementById('difficulty').value;
-        const puzzleData = puzzles[diff];
-        board = copyBoard(puzzleData);
-        original = copyBoard(puzzleData);
-        solution = copyBoard(puzzleData);
-        solveSudoku(solution);
-        selectedRow = -1;
-        selectedCol = -1;
-        const statusDiv = document.getElementById('status');
-        statusDiv.innerHTML = '';
-        statusDiv.style.color = '';
-        elapsedMs = 0;
-        lastTick = Date.now();
-        paused = false;
-        updateTimerUI();
-        renderGrid();
-    }
+    // Eğer oyun devam ediyorsa puanları sıfırla
+		if (currentScore > 0 || currentLevel > 1) {
+			if (!confirm('Yeni oyunda puanlar sıfırlanacak. Devam etmek istiyor musunuz?')) {
+				return;
+			}
+			currentScore = 0;
+			currentLevel = 1;
+			levelCompleted = false;
+			updateScoreDisplay();
+		}
+    
+		const diff = document.getElementById('difficulty').value;
+		const puzzleData = puzzles[diff];
+		board = copyBoard(puzzleData);
+		original = copyBoard(puzzleData);
+		solution = copyBoard(puzzleData);
+		solveSudoku(solution);
+		selectedRow = -1;
+		selectedCol = -1;
+		const statusDiv = document.getElementById('status');
+		statusDiv.innerHTML = '';
+		statusDiv.style.color = '';
+		elapsedMs = 0;
+		lastTick = Date.now();
+		paused = false;
+		updateTimerUI();
+		renderGrid();
+	}
 
     // hataları göster (isteğe bağlı: ama kontrol ederken kullanılır)
     function highlightErrors() {
@@ -628,55 +685,58 @@
         // silme butonu (0)
         const clearBtn = document.createElement('div');
         clearBtn.className = 'num-btn clear-btn';
-        clearBtn.textContent = '⌫ Sil';
+        clearBtn.textContent = 'Sil';
         clearBtn.onclick = () => updateCell(0);
         pad.appendChild(clearBtn);
     }
 
     // kontrol et - hem karşılaştır hem hücreleri kırmızı göster
-    function checkSolution() {
-        let allCorrect = true;
-        for (let i = 0; i < 9; i++) {
-            for (let j = 0; j < 9; j++) {
-                if (board[i][j] !== solution[i][j]) {
-                    allCorrect = false;
-                    break;
-                }
-            }
-        }
-        const statusDiv = document.getElementById('status');
-        if (allCorrect) {
-            statusDiv.innerHTML = '🎉 Mükemmel! Tebrikler, sudoku tamamlandı! 🎉';
-            statusDiv.style.color = '#15803d';
-            clearErrorHighlight();
-        } else {
-            statusDiv.innerHTML = '⚠️ Bazı hücreler yanlış. Kırmızı ile işaretlendi.';
-            statusDiv.style.color = '#b91c1c';
-            // hatalı hücreleri vurgula
-            const cellsDom = document.querySelectorAll('.cell');
-            for (let i = 0; i < 9; i++) {
-                for (let j = 0; j < 9; j++) {
-                    const idx = i * 9 + j;
-                    if (original[i][j] === 0 && board[i][j] !== 0 && board[i][j] !== solution[i][j]) {
-                        cellsDom[idx].classList.add('error');
-                    } else if (original[i][j] === 0 && board[i][j] === 0) {
-                        cellsDom[idx].classList.remove('error');
-                    } else if (original[i][j] !== 0) {
-                        cellsDom[idx].classList.remove('error');
-                    } else if (board[i][j] === solution[i][j]) {
-                        cellsDom[idx].classList.remove('error');
-                    }
-                }
-            }
-        }
-        // 3 saniye sonra status silinebilir ama daha kalıcı bilgi verelim
-        setTimeout(() => {
-            if (document.getElementById('status').innerHTML.includes('Kırmızı ile işaretlendi') || 
-                document.getElementById('status').innerHTML.includes('Mükemmel')) {
-                // sadece ipucu mesajı kalıcı değil, ama otomatik temizleme yapmayalım, kullanıcı yeni hamle yaparsa temizlenir
-            }
-        }, 3000);
-    }
+	function checkSolution() {
+		let allCorrect = true;
+		for (let i = 0; i < 9; i++) {
+			for (let j = 0; j < 9; j++) {
+				if (board[i][j] !== solution[i][j]) {
+					allCorrect = false;
+					break;
+				}
+			}
+		}
+		const statusDiv = document.getElementById('status');
+		if (allCorrect) {
+			statusDiv.innerHTML = '🎉 Mükemmel! Tebrikler, sudoku tamamlandı! 🎉';
+			statusDiv.style.color = '#15803d';
+			clearErrorHighlight();
+        
+        // SEVİYE TAMAMLAMA PUANI EKLE
+			if (!levelCompleted) {
+				addLevelScore();
+				setTimeout(() => {
+					if (confirm(`Seviye ${currentLevel-1} tamamlandı! Yeni seviyeye geçmek ister misiniz?`)) {
+						loadNextLevel();
+					}
+				}, 500);
+			}
+		} else {
+			statusDiv.innerHTML = '⚠️ Bazı hücreler yanlış. Kırmızı ile işaretlendi.';
+			statusDiv.style.color = '#b91c1c';
+        // hatalı hücreleri vurgula
+			const cellsDom = document.querySelectorAll('.cell');
+			for (let i = 0; i < 9; i++) {
+				for (let j = 0; j < 9; j++) {
+					const idx = i * 9 + j;
+					if (original[i][j] === 0 && board[i][j] !== 0 && board[i][j] !== solution[i][j]) {
+						cellsDom[idx].classList.add('error');
+					} else if (original[i][j] === 0 && board[i][j] === 0) {
+						cellsDom[idx].classList.remove('error');
+					} else if (original[i][j] !== 0) {
+						cellsDom[idx].classList.remove('error');
+					} else if (board[i][j] === solution[i][j]) {
+						cellsDom[idx].classList.remove('error');
+					}
+				}
+			}
+		}
+	}
 
     // ipucu: ilk boş hücreye doğru çözüm sayısını yerleştir
     function giveHint() {
@@ -715,7 +775,7 @@
         clearErrorHighlight();
         renderGrid();
         const statusDiv = document.getElementById('status');
-        statusDiv.innerHTML = '✨ Çözüm tamamlandı, tüm boşluklar dolduruldu. ✨';
+        statusDiv.innerHTML = '✨ Çözüm tamamlandı, tüm kutular dolduruldu.';
         statusDiv.style.color = '#0f3b6f';
         setTimeout(() => {
             if (document.getElementById('status').innerHTML.includes('Çözüm tamamlandı'))
@@ -756,6 +816,14 @@ setInterval(() => {
     updateTimerUI();
 }, 250);
 
+// Timer'ı, her saniye güncelleyin
+function updateTimer() {
+    // ... mevcut timer kodu
+    if (window.timeLeft) {
+        window.timeLeft--;
+        // Her saniye puan display'ini güncellemeye gerek yok
+    }
+}
 // ── Settings (persisted) ─────────────────────────────────────────────────────────
 function lsGet(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch(e){ return d; } }
 function lsSet(k, v) { try { localStorage.setItem(k, v); } catch(e){} }
@@ -796,38 +864,21 @@ function settingTimer() {
 function settingTheme() { themeLight = !themeLight; lsSet("sudoku_theme", themeLight?"light":"dark"); applyThemePref(); syncSettingButtons(); }
 
 // ── Leaderboard (persisted top 10) ────────────────────────────────────────────────
-function loadScores() {
-    try { return JSON.parse(lsGet("sudoku_scores", "[]")) || []; } catch(e){ return []; }
-}
-function recordScore() {
-    if (score <= 0) return;
-    let list = loadScores();
-    list.push({ score: score, level: currentLevel, date: new Date().toLocaleDateString("tr-TR") });
-    list.sort((a,b) => b.score - a.score);
-    list = list.slice(0, 10);
-    lsSet("sudoku_scores", JSON.stringify(list));
-}
-function renderLeaderboard() {
-    const list = loadScores();
-    const body = document.getElementById("lb-body");
-    const empty = document.getElementById("lb-empty");
-    body.innerHTML = "";
-    if (list.length === 0) { empty.style.display = "block"; return; }
-    empty.style.display = "none";
-    list.forEach((e, i) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${i+1}</td><td>${e.score}</td><td>${e.level}</td><td>${e.date}</td>`;
-        body.appendChild(tr);
-    });
-}
+
 
 // ── Panels ─────────────────────────────────────────────────────────────────────
 function openPanel(name) {
     closePanel();
-    //if (name === "settings")    syncSettingButtons();
-	if (name === "settings")    document.getElementById("panel-" + name).style.display = "block";
-    if (name === "leaderboard") renderLeaderboard();
-    document.getElementById("panel-" + name).style.display = "block";
+    if (name === "settings") {
+        document.getElementById("panel-" + name).style.display = "block";
+    }
+    if (name === "leaderboard") {
+        updateLeaderboardDisplay();  // renderLeaderboard yerine bunu çağır
+        document.getElementById("panel-" + name).style.display = "block";
+    }
+    if (name === "credits") {
+        document.getElementById("panel-" + name).style.display = "block";
+    }
     paused = true;
 }
 function closePanel() {
@@ -838,7 +889,266 @@ function closePanel() {
     lastTick = 0;   // avoid a big time jump when resuming
 }
 
-</script>
+// === PUAN ve LİDER TABLOSU SİSTEMİ ===
+let currentScore = 0;
+let currentLevel = 1;
+let levelCompleted = false;
 
+// Leaderboard verilerini localStorage'dan al
+let leaderboard = JSON.parse(localStorage.getItem('sudokuLeaderboard')) || [];
 
-</body></html>
+// Puan gösterimini güncelle
+function updateScoreDisplay() {
+    document.getElementById('current-score').innerText = currentScore;
+    document.getElementById('level-display').innerText = currentLevel;
+}
+
+// Seviye tamamlama puanı hesapla
+function calculateLevelScore() {
+    // Seviye zorluğuna göre puan (1.seviye=100, 2.seviye=200...)
+    let baseScore = currentLevel * 100;
+    
+    // Zaman bonusu (kalan süre varsa)
+    let timeBonus = 0;
+    if (window.timeLeft && window.timeLeft > 0) {
+        timeBonus = Math.floor(window.timeLeft / 2); // Kalan sürenin yarısı kadar bonus
+    }
+    
+    // Hata cezası (varsa error sayısına göre)
+    let errorPenalty = (window.errorCount || 0) * 10;
+    
+    let levelScore = baseScore + timeBonus - errorPenalty;
+    return Math.max(levelScore, 50); // Minimum 50 puan
+}
+
+// Seviye tamamlandığında puan ekle
+function addLevelScore() {
+    let earnedScore = calculateLevelScore();
+    currentScore += earnedScore;
+    updateScoreDisplay();
+    
+    // Leaderboard'u güncelle
+    updateLeaderboard(currentScore);
+    
+    // Kullanıcıya göster
+    showStatusMessage(`🎉 Seviye ${currentLevel} tamamlandı! +${earnedScore} puan! Toplam: ${currentScore}`);
+    
+    levelCompleted = true;
+    currentLevel++;
+    
+    return earnedScore;
+}
+
+// Yeni oyun başlatıldığında
+function resetScoreForNewGame() {
+    if (!levelCompleted) {
+        // Eğer oyun tamamlanmadan yeni oyun başlatılırsa
+        if (confirm('Yeni oyunda puanlar sıfırlanacak. Emin misiniz?')) {
+            currentScore = 0;
+            currentLevel = 1;
+            levelCompleted = false;
+            updateScoreDisplay();
+            return true;
+        }
+        return false;
+    } else {
+        // Seviye tamamlandıktan sonra yeni oyun
+        currentScore = 0;
+        currentLevel = 1;
+        levelCompleted = false;
+        updateScoreDisplay();
+        return true;
+    }
+}
+
+// Leaderboard'a puan ekle/güncelle
+function updateLeaderboardDisplay() {
+    let lbTable = document.getElementById('lb-table');
+    let lbEmpty = document.getElementById('lb-empty');
+    
+    if (!lbTable) return;
+    
+    // tbody'yi bul (zaten HTML'de var)
+    let tbody = lbTable.querySelector('tbody');
+    if (!tbody) {
+        tbody = document.createElement('tbody');
+        lbTable.appendChild(tbody);
+    }
+    
+    tbody.innerHTML = '';
+    
+    if (leaderboard.length === 0) {
+        if (lbEmpty) lbEmpty.style.display = 'block';
+        return;
+    }
+    
+    if (lbEmpty) lbEmpty.style.display = 'none';
+    
+    leaderboard.forEach((entry, index) => {
+        let row = tbody.insertRow();
+        let rankCell = row.insertCell(0);
+        let nameCell = row.insertCell(1);
+        let scoreCell = row.insertCell(2);
+        let levelCell = row.insertCell(3);
+        
+        rankCell.innerHTML = index + 1;
+        nameCell.innerHTML = entry.name;
+        scoreCell.innerHTML = entry.score;
+        levelCell.innerHTML = entry.level || 1;
+    });
+}
+
+// Leaderboard panelini güncelle
+function updateLeaderboardDisplay() {
+    let lbTable = document.getElementById('lb-table');
+    let lbEmpty = document.getElementById('lb-empty');
+    
+    if (!lbTable) return;
+    
+    let tbody = lbTable.querySelector('tbody');
+    if (!tbody) {
+        tbody = document.createElement('tbody');
+        lbTable.appendChild(tbody);
+    }
+    
+    tbody.innerHTML = '';
+    
+    if (leaderboard.length === 0) {
+        if (lbEmpty) lbEmpty.style.display = 'block';
+        return;
+    }
+    
+    if (lbEmpty) lbEmpty.style.display = 'none';
+    
+    leaderboard.forEach((entry, index) => {
+        let row = tbody.insertRow();
+        let rankCell = row.insertCell(0);
+        let nameCell = row.insertCell(1);
+        let scoreCell = row.insertCell(2);
+        let levelCell = row.insertCell(3);
+        
+        rankCell.innerHTML = index + 1;
+        nameCell.innerHTML = entry.name;
+        scoreCell.innerHTML = entry.score;
+        levelCell.innerHTML = entry.level || 1;
+    });
+}
+
+// Puan sıfırlama (oyun tamamen sıfırlandığında)
+function resetLeaderboard() {
+    if (confirm('Tüm lider tablosunu sıfırlamak istediğinize emin misiniz?')) {
+        leaderboard = [];
+        localStorage.removeItem('sudokuLeaderboard');
+        updateLeaderboardDisplay();
+        currentScore = 0;
+        currentLevel = 1;
+        updateScoreDisplay();
+        showStatusMessage('Lider tablosu sıfırlandı!');
+    }
+}
+
+// Oyuncu ismi değiştir
+function setPlayerName() {
+    let name = prompt('Oyuncu adınızı girin:', localStorage.getItem('playerName') || '');
+    if (name && name.trim()) {
+        localStorage.setItem('playerName', name.trim());
+        showStatusMessage(`Hoş geldin ${name}!`);
+        updateLeaderboard(currentScore); // İsmi güncelle
+    }
+}
+
+// Durum mesajı göster
+function showStatusMessage(msg) {
+    let statusDiv = document.querySelector('.status');
+    if (statusDiv) {
+        statusDiv.innerHTML = msg;
+        setTimeout(() => {
+            if (statusDiv.innerHTML === msg) {
+                statusDiv.innerHTML = '';
+            }
+        }, 3000);
+    }
+}
+
+// Seviye kontrolü (oyun çözüldüğünde çağrılacak)
+function checkLevelComplete() {
+    // Grid'in tamamen dolu ve doğru olup olmadığını kontrol et
+    let isComplete = true;
+    for (let i = 0; i < 81; i++) {
+        let cell = cells[i];
+        let value = parseInt(cell.innerText);
+        if (isNaN(value) || value < 1 || value > 9) {
+            isComplete = false;
+            break;
+        }
+    }
+    
+    if (isComplete && !levelCompleted) {
+        // Doğruluk kontrolü
+        if (isSudokuValid()) {
+            addLevelScore();
+            setTimeout(() => {
+                if (confirm(`Seviye ${currentLevel-1} tamamlandı! Yeni seviyeye geçmek ister misiniz?`)) {
+                    loadNextLevel();
+                }
+            }, 500);
+        }
+    }
+}
+
+// Yeni seviye yükle
+	function loadNextLevel() {
+    // Zorluk seviyesini artır veya değiştir
+		const diff = document.getElementById('difficulty').value;
+		let nextDiff = diff;
+    
+    // Her 3 seviyede bir zorluk artır
+		if (currentLevel % 3 === 0 && diff === 'easy') {
+			document.getElementById('difficulty').value = 'medium';
+			nextDiff = 'medium';
+		} else if (currentLevel % 3 === 0 && diff === 'medium') {
+			document.getElementById('difficulty').value = 'hard';
+			nextDiff = 'hard';
+		}
+    
+		const puzzleData = puzzles[nextDiff];
+		board = copyBoard(puzzleData);
+		original = copyBoard(puzzleData);
+		solution = copyBoard(puzzleData);
+		solveSudoku(solution);
+		selectedRow = -1;
+		selectedCol = -1;
+		renderGrid();
+		levelCompleted = false;
+    
+		const statusDiv = document.getElementById('status');
+		statusDiv.innerHTML = `🎯 Seviye ${currentLevel} başladı! İyi şanslar!`;
+		statusDiv.style.color = '#2563eb';
+		setTimeout(() => {
+			if (document.getElementById('status').innerHTML.includes('başladı'))
+				document.getElementById('status').innerHTML = '';
+		}, 2000);
+	}
+
+// Sudoku geçerlilik kontrolü
+function isSudokuValid() {
+    // Mevcut sudoku doğrulama kodunuz
+    // Bu kısmı mevcut validasyon fonksiyonunuza göre doldurun
+    return true; // Geçici
+}
+
+// Sayfa yüklendiğinde
+document.addEventListener('DOMContentLoaded', () => {
+    updateScoreDisplay();
+    updateLeaderboardDisplay();
+    
+    // Her hücre düzenlemesinde seviye kontrolü yap
+    if (typeof cells !== 'undefined') {
+        cells.forEach(cell => {
+            cell.addEventListener('input', () => checkLevelComplete());
+        });
+    }
+});
+	</script>
+</body>
+</html>
