@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku54 v0.0.4 54Gamez</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 480px;
+        }
+        h1 { text-align: center; margin-bottom: 15px; color: #333; }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        button, select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            background: #4f46e5;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover { background: #4338ca; }
+        
+        .sudoku-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 45px);
+            gap: 2px;
+            background: #222;
+            padding: 4px;
+            border: 6px solid #222;
+            border-radius: 12px;
+            margin: 0 auto;
+        }
+        .cell {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            background: white;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            position: relative;
+        }
+        .cell.fixed {
+            color: #1e3a8a;
+            font-weight: bold;
+            background: #eff6ff;
+        }
+        .cell.selected {
+            background: #dbeafe;
+            border: 2px solid #3b82f6;
+        }
+        .cell.error {
+            color: #ef4444;
+            background: #fee2e2;
+        }
+
+        /* ===================== KALIN ÇİZGİLER (DÜZELTİLDİ) ===================== */
+        /* Dikey kalın çizgiler (3. ve 6. sütun sonrası) */
+        .cell:nth-child(3n):not(:nth-child(9n)) {
+            border-right: 6px solid #222 !important;
+        }
+        
+        /* Yatay kalın çizgiler (3. ve 6. satır sonrası) */
+        .cell:nth-child(n+19):nth-child(-n+27),
+        .cell:nth-child(n+46):nth-child(-n+54) {
+            border-bottom: 6px solid #222 !important;
+        }
+        
+        /* Köşelerde kalınlık çakışmasını önlemek için */
+        .cell {
+            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+        }
+		
+		.number-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 20px;
+        }
+        .num-btn {
+            padding: 12px;
+            font-size: 1.3rem;
+            background: #f1f5f9;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .num-btn:hover { background: #e0e7ff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧩 Sudoku54 v0.0.4 54Gamez</h1>
+        
+        <div class="controls">
+            <select id="difficulty">
+                <option value="easy">Kolay</option>
+                <option value="medium" selected>Orta</option>
+                <option value="hard">Zor</option>
+            </select>
+            <button onclick="newGame()">Yeni Oyun</button>
+            <button onclick="checkSolution()">Kontrol Et</button>
+        </div>
+
+        <div class="sudoku-grid" id="grid"></div>
+        
+        <div class="status" id="status"></div>
+        
+        <div class="number-pad" id="number-pad"></div>
+        
+        <div style="text-align:center; margin-top:15px;">
+            <button onclick="giveHint()">İpucu</button>
+            <button onclick="solvePuzzle()">Çözümü Göster</button>
+        </div>
+    </div>
+
+    <script>
+        let board = [], solution = [], original = [];
+        let selectedRow = -1, selectedCol = -1;
+
+        const puzzles = {
+            easy: [[5,3,0,0,7,0,0,0,0],[6,0,0,1,9,5,0,0,0],[0,9,8,0,0,0,0,6,0],[8,0,0,0,6,0,0,0,3],[4,0,0,8,0,3,0,0,1],[7,0,0,0,2,0,0,0,6],[0,6,0,0,0,0,2,8,0],[0,0,0,4,1,9,0,0,5],[0,0,0,0,8,0,0,7,9]],
+            medium: [[0,0,0,6,0,0,0,0,0],[0,5,0,0,8,0,0,1,0],[0,0,9,0,0,4,0,0,7],[0,0,0,0,3,0,8,0,0],[0,8,0,7,0,1,0,9,0],[0,0,6,0,9,0,0,0,0],[4,0,0,3,0,0,6,0,0],[0,7,0,0,2,0,0,5,0],[0,0,0,0,0,9,0,0,0]],
+            hard: [[0,0,0,0,0,0,0,1,0],[0,0,0,0,9,0,0,0,8],[0,0,0,5,0,0,3,0,0],[0,0,0,0,0,7,0,0,0],[0,8,0,0,0,0,0,6,0],[0,0,0,4,0,0,0,0,0],[0,0,7,0,0,3,0,0,0],[3,0,0,0,2,0,0,0,0],[0,5,0,0,0,0,0,0,0]]
+        };
+
+        function isValid(b, r, c, num) {
+            for (let i = 0; i < 9; i++) 
+                if (b[r][i] === num || b[i][c] === num) return false;
+            const sr = Math.floor(r/3)*3, sc = Math.floor(c/3)*3;
+            for (let i = 0; i < 3; i++)
+                for (let j = 0; j < 3; j++)
+                    if (b[sr+i][sc+j] === num) return false;
+            return true;
+        }
+
+        function solve(b) {
+            for (let r = 0; r < 9; r++) {
+                for (let c = 0; c < 9; c++) {
+                    if (b[r][c] === 0) {
+                        for (let n = 1; n <= 9; n++) {
+                            if (isValid(b, r, c, n)) {
+                                b[r][c] = n;
+                                if (solve(b)) return true;
+                                b[r][c] = 0;
+                            }
+                        }
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function newGame() {
+            const diff = document.getElementById('difficulty').value;
+            board = puzzles[diff].map(row => [...row]);
+            original = puzzles[diff].map(row => [...row]);
+            solution = puzzles[diff].map(row => [...row]);
+            solve(solution);
+            selectedRow = selectedCol = -1;
+            document.getElementById('status').innerHTML = '';
+            renderGrid();
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+            for (let i = 0; i < 9; i++) {
+                for (let j = 0; j < 9; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    if (board[i][j] !== 0) {
+                        cell.textContent = board[i][j];
+                        if (original[i][j] !== 0) cell.classList.add('fixed');
+                    }
+                    cell.onclick = () => selectCell(i, j);
+                    grid.appendChild(cell);
+                }
+            }
+        }
+
+        function selectCell(r, c) {
+            selectedRow = r;
+            selectedCol = c;
+            renderGrid();
+            const cells = document.querySelectorAll('.cell');
+            cells[r*9 + c].classList.add('selected');
+        }
+
+        function updateCell(num) {
+            if (selectedRow === -1 || original[selectedRow][selectedCol] !== 0) return;
+            board[selectedRow][selectedCol] = num;
+            renderGrid();
+        }
+
+        function createNumberPad() {
+            const pad = document.getElementById('number-pad');
+            pad.innerHTML = '';
+            for (let i = 1; i <= 9; i++) {
+                const btn = document.createElement('div');
+                btn.className = 'num-btn';
+                btn.textContent = i;
+                btn.onclick = () => updateCell(i);
+                pad.appendChild(btn);
+            }
+        }
+
+        function checkSolution() {
+            let correct = true;
+            for (let i = 0; i < 9; i++) {
+                for (let j = 0; j < 9; j++) {
+                    if (board[i][j] !== solution[i][j]) correct = false;
+                }
+            }
+            const status = document.getElementById('status');
+            if (correct) {
+                status.innerHTML = '🎉 Tebrikler! Başardınız!';
+                status.style.color = 'green';
+            } else {
+                status.innerHTML = '❌ Bazı yerler yanlış';
+                status.style.color = 'red';
+            }
+        }
+
+        function giveHint() {
+            for (let i = 0; i < 9; i++) {
+                for (let j = 0; j < 9; j++) {
+                    if (board[i][j] === 0) {
+                        board[i][j] = solution[i][j];
+                        renderGrid();
+                        return;
+                    }
+                }
+            }
+        }
+
+        function solvePuzzle() {
+            board = solution.map(row => [...row]);
+            renderGrid();
+            document.getElementById('status').innerHTML = '✨ Çözüm gösterildi';
+        }
+
+        window.onload = () => {
+            newGame();
+            createNumberPad();
+        };
+    </script>
+</body>
+</html>
