@@ -278,6 +278,54 @@
             background: #bdd4ff;
             transform: scale(0.96);
         }
+		
+		 /* ── Modal panels (settings / leaderboard / credits) ── */
+        .panel {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,12,0.95);
+            border: 2px solid #00ffff;
+            border-radius: 14px;
+            padding: 22px 26px;
+            min-width: 300px;
+            max-width: 86%;
+            text-align: left;
+            display: none;
+            backdrop-filter: blur(5px);
+            z-index: 20;
+            box-shadow: 0 0 40px rgba(0,255,255,0.2);
+        }
+        .panel h3 {
+            margin: 0 0 16px 0; font-size: 18px; letter-spacing: 3px;
+            text-align: center; color: #00ffff; text-transform: uppercase;
+        }
+        .panel-row {
+            display: flex; justify-content: space-between; align-items: center;
+            margin: 12px 0; font-size: 13px; color: #cdd; letter-spacing: 1px;
+        }
+        .toggle-btn {
+            background: transparent; border: 1.5px solid #00ffff; color: #00ffff;
+            padding: 6px 14px; border-radius: 6px; cursor: pointer;
+            font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold;
+            letter-spacing: 1px; min-width: 96px; text-align: center;
+        }
+        .toggle-btn.off { border-color: #556; color: #889; }
+        .panel-close {
+            display: block; margin: 18px auto 0; background: transparent;
+            border: 2px solid #ff0055; color: #ff0055; padding: 8px 24px;
+            border-radius: 6px; cursor: pointer; font-family: 'Courier New', monospace;
+            font-weight: bold; letter-spacing: 2px;
+        }
+        .panel-close:hover, .panel-close:active { background: #ff0055; color: #fff; }
+        #lb-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        #lb-table th, #lb-table td { padding: 6px 8px; text-align: left; border-bottom: 1px solid #223; }
+        #lb-table th { color: #00ffff; letter-spacing: 1px; }
+        #lb-table td { color: #cdd; }
+        #lb-empty { color: #889; font-size: 12px; text-align: center; padding: 10px 0; }
+        .credits-line { font-size: 13px; color: #cdd; line-height: 1.7; letter-spacing: 0.5px; }
+        .credits-line b { color: #00ffff; }
+        .credits-brand { color: #ff8800; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -304,8 +352,25 @@
         <button onclick="giveHint()">💡 İpucu</button>
         <button onclick="solvePuzzle()">✨ Çözüm</button>
     </div>
-</div>
-
+	</div>
+	<!-- Credits panel -->
+        <div id="panel-credits" class="panel">
+            <h3>ℹ️ Hakkında</h3>
+            <div class="credits-line">
+                <b>Sudoku54 v0.1.1</b> · 54Gamez<br><br>
+                Programcılar:<br>
+                Yavuz Selim DURMUŞ &amp; Selim DURMUŞ<br><br>
+                <span class="credits-brand">MyBetaSoft · MyBetaSoftware</span><br>
+                <span class="credits-brand">TrLab · SkyLazarus</span>
+            </div>
+            <button class="panel-close" onclick="closePanel()">KAPAT</button>
+        </div>
+		 <!-- Icon bar above the game area -->
+    <div id="icon-bar">
+        <button class="icon-btn" title="Ayarlar"  onclick="openPanel('settings')">⚙️</button>
+        <button class="icon-btn" title="Rekorlar" onclick="openPanel('leaderboard')">🏆</button>
+        <button class="icon-btn" title="Hakkında" onclick="openPanel('credits')">ℹ️</button>
+    </div>
 <script>
     // Oyun durumu
     let board = [], solution = [], original = [];
